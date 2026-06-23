@@ -38,26 +38,33 @@ Location fit is the remaining 10%, with preference for Noida, Pune, Delhi NCR, H
 Penalties are subtracted rather than multiplied. A single red flag shouldn't eliminate someone who is otherwise a strong match — it should reduce their score proportionally.
 
 ---
-
 ## Architecture
 
-candidates.jsonl (100K records)
-        ↓
-Career Narrative Builder (job descriptions, not skills list)
-        ↓
-all-MiniLM-L6-v2 (local model, no API)
-        ↓
-Saved Embeddings ──────────────────────────────┐
-                                               ↓
+**Stage 1 — Precompute (run once, offline)**
 
-                                        Job Description → Embedded → Cosine Similarity
-                                               ↓
-                                               
-                              Rule-based Scoring
-                         (hard req + behavioral + penalties)
-                                               ↓
-                               Top 100 with Evidence Quotes
+  candidates.jsonl (100K records)
+            ↓
+  Career Narrative Builder
+ (actual job descriptions, not skills list)
+            ↓
+  all-MiniLM-L6-v2
+ (local model, no API call)
+            ↓
+  Saved Embeddings to disk
 
+**Stage 2 — Rank (under 2 minutes, CPU only)**
+        Job Description
+               ↓
+  Embedded with same local model
+                ↓
+  Cosine Similarity vs all 100K embeddings
+                ↓
+         Rule-based Scoring
+    (hard requirements + behavioral signals + penalties)
+                ↓
+  Top 100 candidates with Evidence Quotes
+
+---
 ## Traps I Specifically Handled
 
 The dataset has honeypot profiles — candidates with impossible combinations like "expert" proficiency in a skill with zero months of experience, or claimed experience years that don't add up against their career history. These are filtered out entirely before ranking.
