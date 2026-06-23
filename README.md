@@ -39,6 +39,23 @@ Penalties are subtracted rather than multiplied. A single red flag shouldn't eli
 
 ---
 
+## Architecture
+
+candidates.jsonl (100K records)
+        ↓
+Career Narrative Builder (job descriptions, not skills list)
+        ↓
+all-MiniLM-L6-v2 (local model, no API)
+        ↓
+Saved Embeddings ──────────────────────────────┐
+                                               ↓
+Job Description → Embedded → Cosine Similarity
+                                               ↓
+                              Rule-based Scoring
+                         (hard req + behavioral + penalties)
+                                               ↓
+                               Top 100 with Evidence Quotes
+
 ## Traps I Specifically Handled
 
 The dataset has honeypot profiles — candidates with impossible combinations like "expert" proficiency in a skill with zero months of experience, or claimed experience years that don't add up against their career history. These are filtered out entirely before ranking.
