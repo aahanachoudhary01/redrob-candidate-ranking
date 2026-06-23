@@ -50,8 +50,7 @@ all-MiniLM-L6-v2 (local model, no API)
 Saved Embeddings ──────────────────────────────┐
                                                ↓
 
-                                               
-Job Description → Embedded → Cosine Similarity
+                                        Job Description → Embedded → Cosine Similarity
                                                ↓
                                                
                               Rule-based Scoring
